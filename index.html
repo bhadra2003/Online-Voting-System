@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://assets-global.website-files.com/6320c9d25c243e328157e175/6356f9537dde9d2d64eb39fd_6356bb8417b823b8c686776f_what-is-doc-verif_hero.png'); /* Add your image path */
+            background-size: cover; /* Cover the entire background */
+            background-position: left center; /* Center the background image */
+            background-repeat: no-repeat; /* Do not repeat the image */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 0px;
+            margin-top: 0;
+        }
+        
+        #verificationForm {
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center align the content */
+            margin-right: 5px; 
+            margin-top: 107px;
+        }
+        
+        label {
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 200px;
+            padding: 20px;
+            margin-bottom: 40px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            box-sizing: border-box;
+        }
+        
+        button[type="button"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button[type="button"]:hover {
+            background-color: #0056b3;
+        }
+        
+        #response {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Verify Voter</h1>
+    <form id="verificationForm">
+        <label for="voterId">Enter Voter ID:</label><br>
+        <input type="text" id="voterId" name="voter_id" required><br><br>
+        <button type="button" onclick="verifyVoter()">Verify Voter</button>
+    </form>
+    <div id="response"></div>
+    <script>
+        async function verifyVoter() {
+            const voterId = document.getElementById('voterId').value;
+
+            const response = await fetch('http://127.0.0.1:8000/check_voter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ voter_id: voterId })
+            });
+
+            const data = await response.json();
+            const responseDiv = document.getElementById('response');
+
+            if (response.status === 200) {
+                // Voter exists, proceed to casting vote
+                responseDiv.innerText = data.message;
+                // Redirect to cast_vote.html
+                window.location.href = '/vote';
+            } else {
+                // Voter does not exist
+                responseDiv.innerText = data.error;
+            }
+        }
+    </script>
+</body>
+</html>
+
