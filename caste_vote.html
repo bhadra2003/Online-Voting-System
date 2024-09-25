@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Voting System - Cast Vote</title>
+    <style>
+        /* CSS styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background-image: url('https://insight.kellogg.northwestern.edu/imager/clientcontent/44862/first-among-equals_265dcf20bf86bc91590c49e978b05b5a.jpg'); /* Add your image path */
+            background-size: cover; /* Cover the entire background */
+            background-position: center; /* Center the background image */
+            background-repeat: no-repeat; /* Do not repeat the image */
+}
+
+#voteForm {
+    position: absolute;
+    top: 20px; /* Adjust top position */
+    left: 20px; /* Adjust left position */
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center align the content */
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    font-size: 40px; /* Adjust font size */
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+button[type="button"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+button[type="button"]:hover {
+    background-color: #0056b3;
+}
+
+#response {
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+.error-message {
+    font-weight: bold;
+    font-size: 50px;
+}
+.message {
+    font-weight: bold;
+    font-size: 40px;
+}
+table {
+            margin-top: 20px;
+            margin-left: 500px;
+            border-collapse: collapse;
+            width: 40%; /* Adjust the width as needed */
+            height: auto;
+            background-color: #fff; /* Set background color to white */
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 8px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+
+    </style>
+</head>
+<body>
+    <form id="voteForm">
+        <h1>Cast Your Vote</h1>
+        <label for="voterId">Voter ID:</label><br>
+        <input type="text" id="voterId" name="voter_id" required><br><br>
+        <label for="candidateId">Candidate ID:</label><br>
+        <input type="text" id="candidateId" name="candidate_id" required><br><br>
+        <button type="button" onclick="castVote()">Cast Vote</button>
+    </form>
+    '<table id="candidatesTable">
+        <thead>
+          <tr>
+            <th>Candidate ID</th>
+            <th>Name</th>
+            <th>Political Party</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Amit Shah</td>
+            <td>Bharatiya Janata Party</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Rahul Gandhi</td>
+            <td>Indian National Congress</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Arvind Kejriwal</td>
+            <td>Aam Aadmi Party</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Mamata Banerjee</td>
+            <td>All India Trinamool Congress</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Mayawati</td>
+            <td>Bahujan Samaj Party</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Nitish Kumar</td>
+            <td>Janata Dal United</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>Arvind Sawant</td>
+            <td>Shiv Sena</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>Omar Abdullah</td>
+            <td>Jammu and Kashmir National Conference</td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td>Naveen Patnaik</td>
+            <td>Biju Janata Dal</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>Asaduddin Owaisi</td>
+            <td>All India Majlis-e-Ittehadul Muslimeen</td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td>K. Chandrashekar Rao</td>
+            <td>Telangana Rashtra Samithi</td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td>M. K. Stalin</td>
+            <td>Dravida Munnetra Kazhagam</td>
+          </tr>
+          <tr>
+            <td>13</td>
+            <td>Pinarayi Vijayan</td>
+            <td>Communist Party of India Marxist</td>
+          </tr>
+          <!-- Add more rows for other candidates -->
+        </tbody>
+      </table>'
+  
+    <div id="response" class="error-message"></div>
+    <div id="response" class="message"></div>
+
+    <!-- JavaScript for Form Submission -->
+    <script>
+        async function castVote() {
+            const voterId = document.getElementById('voterId').value; // Get voter ID from input field
+            const candidateId = document.getElementById('candidateId').value; // Get candidate ID from input field
+
+            const response = await fetch('http://127.0.0.1:8000/vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ voter_id: voterId, candidate_id: candidateId }) // Include both voter ID and candidate ID in the request body
+            });
+
+            const data = await response.json();
+            const responseDiv = document.getElementById('response');
+            const form = document.getElementById('voteForm'); // Get the form element
+            const candidatesTable = document.getElementById('candidatesTable'); // Get the table element
+
+            if (response.status === 200) {
+                // Vote cast successfully
+                form.style.display = 'none';// Hide the form
+                responseDiv.classList.remove('error-message');
+                responseDiv.classList.add('message');
+                responseDiv.innerText = data.message;
+            } else {
+                // Vote not successful
+                if (response.status === 409) {
+                    // Voter has already cast a vote
+                    form.style.display = 'none'; // Hide the form
+                    responseDiv.innerText = 'You have already cast your vote.';
+                } else {
+                    // Other errors
+                    responseDiv.innerText = 'Error: Something went wrong';
+                }
+            }
+            
+            // Display the table after the button is pressed
+            candidatesTable.style.display = 'none';
+        }
+    </script>  
+</body>
+</html>
+
